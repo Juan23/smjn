@@ -17,12 +17,49 @@ def clearScreen():#clear screen and add header
     print "------------------------------"
 
 def searchEpisode(url):
+    clearScreen()
+
+    #connect
     req = urllib2.Request(url,headers=hdr)
     page = urllib2.urlopen(req)
     content = page.read()
-    print "Episode search done."
+
+    #variables
+    countEpisode = content.count('<li><strong>')
+    n = 0
+    linkStart = 0
+    tStart = 0
+    linkEpisodes = [] #list of episodes
+
+
+    while n != countEpisode:
+
+        #find start and end of link
+        linkStart = 21 + content.find('<li><strong>',linkStart)
+        linkEnd = -2 + content.find('>',linkStart)
+
+        #find start and end of title
+        tStart = 3 + linkEnd
+        tEnd = -2 + content.find('a>',tStart)
+
+        linkEpisodes.append(content[linkStart:linkEnd]) #append link
+
+        print countEpisode - n, " -  " + content[tStart:tEnd]
+
+        linkStart = tEnd #append next search
+        n = n + 1
+
+    print "x - Home"
+
+    r1 = input("Enter: ")
+
+    if r1 == "x":
+        home()
+    else:
+        #run program here
 
 def searchSeries(url): #send search request then list all links
+    clearScreen()
 
     #send request and connect
     req = urllib2.Request('http://www.couchtuner.ag/?s=' + url, headers=hdr)
