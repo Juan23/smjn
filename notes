@@ -1,0 +1,5 @@
+    #try:
+    #   page = urllib2.urlopen(req)
+    #except urllib2.HTTPError, e:
+    #    print e.fp.read()
+    #content = response.read()

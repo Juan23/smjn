@@ -1,30 +1,55 @@
 import urllib2
 import os
 
+ver = "Couchtuner v0.1"
+
 #Ranierland.biz web searcher / crawler
 #-XF
 
-#clear screen and add header
-def clearScreen(): #clears the screen
+
+def clearScreen():#clear screen and add header
     if os.name == "nt":
         os.system('cls')
     else:
         os.system('clear')
 
-    print "Couchtuner Crawler v0.1"
+    print ver
     print "------------------------------"
 
-def search(url):
-    req = urllib2.Request('http://www.couchtuner.ag/?s=' + url, headers=hdr)
-
-    try:
-        page = urllib2.urlopen(req)
-    except urllib2.HTTPError, e:
-        print e.fp.read()
-    
+def searchEpisode(url):
+    req = urllib2.Request(url,headers=hdr)
+    page = urllib2.urlopen(req)
     content = page.read()
-    print "Done"
-    #html = response.read()
+    print "Episode search done."
+
+def searchSeries(url): #send search request then list all links
+
+    #send request and connect
+    req = urllib2.Request('http://www.couchtuner.ag/?s=' + url, headers=hdr)
+    page = urllib2.urlopen(req)
+    content = page.read()
+
+    #grab series names and links
+    #only one series for now
+    linkSeries = []
+    linkStart = 6 + content.find('href=',content.find('Search Results :')) #get first link after actual results
+    linkEnd = -2 +content.find('rel=',linkStart)
+    linkSeries.append(content[linkStart:linkEnd])
+
+    titleStart = 1 + content.find('>',linkEnd)
+    titleEnd = -2 + content.find('a>',titleStart)
+    print "1 - " + content[titleStart:titleEnd]
+    print ""
+    print "0 - Home"
+
+    #fix this part, use while
+    r1 = input("Enter: ")
+
+    if r1 == 1:
+        searchEpisode(linkSeries[0])
+    elif r1 == 0:
+        home()
+
 
 #main
 def home():
@@ -37,7 +62,7 @@ def home():
         clearScreen()
         print "What do you want to watch"
         r2 = raw_input("Search: ")
-        search(r2.replace(" ","+"))
+        searchSeries(r2.replace(" ","+"))
 
     elif r1 == 2:
         clearScreen()
@@ -55,10 +80,14 @@ def home():
         home()
         print "Invalid. Please try again."
 
+#user-agent
 hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
        'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
        'Accept-Encoding': 'none',
        'Accept-Language': 'en-US,en;q=0.8',
        'Connection': 'keep-alive'}
-home()
+
+
+
+home() #start
