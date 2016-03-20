@@ -1,5 +1,6 @@
 import urllib2
 import os
+import webbrowser
 
 ver = "Couchtuner v0.1"
 
@@ -49,13 +50,14 @@ def searchEpisode(url):
         linkStart = tEnd #append next search
         n = n + 1
 
-    print "x - Home"
+    print "0 - Home"
 
     r1 = input("Enter: ")
 
-    if r1 == "x":
+    if r1 == 0:
         home()
     else:
+        webbrowser.open(linkEpisodes[countEpisode - n])
         #run program here
 
 def searchSeries(url): #send search request then list all links
